@@ -1,49 +1,68 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-
-char *ChargerChaine(int N) {
-    char *chaine = (char*)malloc(N+1); 
-    printf("Veuillez saisir la chaine:\n");
-    fgets(chaine, N, stdin);
-    chaine[strcspn(chaine, "\n")] = '\0'; 
-    return chaine;
-}
-
-int Longueur(char *ch) {
-    return strlen(ch);
-}
-
-void ChargerTab(char *p, char Tab[]) {
-    strcpy(Tab, p);
-}
-
-void InverserTab(char Tab[], char T[], int m) {
-    for (int i = 0; i < m; i++) {
-        T[i] = Tab[m-i-1];
-    }
-}
-
-void AfficherTab(char Tab[], int m) {
-    for (int i = 0; i < m; i++) {
-        printf("%c", Tab[i]);
-    }
-    printf("\n");
-}
 
 int main() {
     int n;
+
+    // طلب حجم السلسلة
     printf("Veuillez saisir la taille maximale de la chaine:\n");
     scanf("%d", &n);
-    char *ch = ChargerChaine(n);
-    int m = Longueur(ch);
-    char Tab[m], T[m];
-    ChargerTab(ch, Tab);
-    printf("La chaine originale: \n");
-    AfficherTab(Tab, m);
-    InverserTab(Tab, T, m);
+
+    // تخصيص ذاكرة للنص
+    char *chaine = (char *)malloc((n + 1) * sizeof(char));
+    if (chaine == NULL) {
+        printf("Erreur d'allocation memoire.\n");
+        return 1;
+    }
+
+    // قراءة النص من المستخدم
+    printf("Veuillez saisir la chaine:\n");
+    scanf(" "); // لتجاهل المسافة المتبقية من scanf
+    for (int i = 0; i < n; i++) {
+        char c = getchar();
+        if (c == '\n') { // إنهاء الإدخال عند الضغط على Enter
+            chaine[i] = '\0';
+            break;
+        }
+        chaine[i] = c;
+    }
+    chaine[n] = '\0'; // تأكد من انتهاء النص بـ '\0'
+
+    // حساب طول النص
+    int longueur = 0;
+    while (chaine[longueur] != '\0') {
+        longueur++;
+    }
+
+    // نسخ النص إلى مصفوفة
+    char Tab[longueur + 1];
+    for (int i = 0; i < longueur; i++) {
+        Tab[i] = chaine[i];
+    }
+    Tab[longueur] = '\0'; // إنهاء النص
+
+    // عكس النص
+    char T[longueur + 1];
+    for (int i = 0; i < longueur; i++) {
+        T[i] = Tab[longueur - i - 1];
+    }
+    T[longueur] = '\0'; // إنهاء النص
+
+    // عرض النص الأصلي
+    printf("La chaine originale:\n");
+    for (int i = 0; i < longueur; i++) {
+        printf("%c", Tab[i]);
+    }
+    printf("\n");
+
+    // عرض النص المعكوس
     printf("La chaine inversée:\n");
-    AfficherTab(T, m);
-    free(ch);
+    for (int i = 0; i < longueur; i++) {
+        printf("%c", T[i]);
+    }
+    printf("\n");
+
+    // تحرير الذاكرة
+    free(chaine);
     return 0;
 }
